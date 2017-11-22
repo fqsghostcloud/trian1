@@ -36,31 +36,84 @@
 
 
 ## 配置虚拟机网络
-1. 使用ifconfig查看，如提示无ifconfig命令，使用yum -y install net-tools.x86_64安装。查询结果如图所示：  
-![network_1.png](picture/network_1.png)
-2. vi /etc/sysconfig/network-scripts/ifcfg-eth0修改为:  
-![network_2.png](picture/network_2.png)
-3. 重启网络服务：service network restart
->  ONBOOT=yes 设置为开机后启动
->  IPADDR=192.168.34.33 #此处设置固定的IP 
->  GATEWAY=192.168.0.1 #此处设置网关IP 
->  BOOTPROTO=static #设置为静态
+2. 修改网卡配置，使用vi /etc/sysconfig/network-scripts/ifcfg-eth0修改为:
+	```
+# 修改以下配置
+$ vi /etc/sysconfig/network-scripts/ifcfg-eth0
+ONBOOT=yes 设置为开机后启动
+IPADDR=192.168.34.131 #此处设置固定的IP 
+GATEWAY=192.168.0.1 #此处设置网关IP 
+BOOTPROTO=static #设置为静态
+# 修改后
+TYPE="Ethernet"
+BOOTPROTO="static"
+DEFROUTE="yes"
+IPV4_FAILURE_FATAL="no"
+IPV6INIT="yes"
+IPV6_AUTOCONF="yes"
+IPV6_DEFROUTE="yes"
+IPV6_FAILURE_FATAL="no"
+IPV6_ADDR_GEN_MODE="stable-privacy"
+NAME="eth0"
+UUID="150fc126-a19c-4f82-ae5b-9fa118374f27"
+DEVICE="eth0"
+ONBOOT="yes"
+IPADDR="192.168.34.131"
+PREFIX="16"
+GATEWAY="192.168.0.1"
+DNS1="114.114.114.114"
+IPV6_PEERDNS="yes"
+IPV6_PEERROUTES="yes"
+IPV6_PRIVACY="no"
+
+	```
+
+3. 重启网络服务：
+	```
+$ service network restart
+	```
   
-4. ping www.baidu.com 测试网络是否畅通
+4. 测试网络是否畅通
+	```
+$ ping www.baidu.com 
+	```
 
 
-## 配置SSH服务
-1. 使用yum list installed | grep openssh-server 查看是否安装openssh-server。若未安装，使用yum install openssh-server，安装openssh-server  
-![SSH_1.png](picture/SSH_1.png)
-2. vi /etc/ssh/sshd_config进行文件编辑
-3. 把监听端口、监听地址前的#号去除,如图：  
-![SSH_2.png](picture/SSH_2.png)
-4. 开启允许远程登陆，去除PermitRootLogin的#号,如图:  
-![SSH_3.png](picture/SSH_3.png)
-5. 开启使用用户名密码来作为连接验证，去除PasswordActhentication的#，如图：
-![SSH_4.png](picture/SSH_4.png)
-6. service sshd start 开启服务
-7. ps -e | grep sshd 检查是否启动  
-![SSH_5.png](picture/SSH_5.png)
-8. netstat -an | grep 22 检查端口
-![SSH_6.png](picture/SSH_6.png)
+## 配置SSH服务  
+1. 安装openssh-server
+```
+# 查看是否安装openssh-server
+$ yum list installed | grep openssh-server
+openssh-server.x86_64                7.4p1-11.el7                   @anaconda 
+# 若未安装，使用
+$ yum install openssh-server
+```
+2. 编辑文件
+	```
+# 把监听端口、监听地址前的#号去除
+$ vi /etc/ssh/sshd_config
+Port 22
+#AddressFamily any
+ListenAddress 0.0.0.0
+ListenAddress ::
+# 开启允许远程登陆，去除PermitRootLogin的#号
+#LoginGraceTime 2m
+PermitRootLogin yes
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+# 开启使用用户名密码来作为连接验证，去除PasswordActhentication的#
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication yes
+#PermitEmptyPasswords no
+PasswordAuthentication yes
+	```
+6. 开启服务并检查
+	```
+# 开启服务
+$ service sshd start
+# 检查是否启动
+$ ps -e | grep sshd 
+# 检查端口
+$ netstat -an | grep 22
+	```
