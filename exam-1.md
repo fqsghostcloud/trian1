@@ -74,9 +74,9 @@ $ service network restart
 ```
   
 4. 测试网络是否畅通
-	```
+```
 $ ping www.baidu.com 
-	```
+```
 
 
 ## 配置SSH服务  
