@@ -37,7 +37,7 @@
 
 ## 配置虚拟机网络
 2. 修改网卡配置，使用vi /etc/sysconfig/network-scripts/ifcfg-eth0修改为:
-	```
+```
 # 修改以下配置
 $ vi /etc/sysconfig/network-scripts/ifcfg-eth0
 ONBOOT=yes 设置为开机后启动
@@ -66,12 +66,12 @@ IPV6_PEERDNS="yes"
 IPV6_PEERROUTES="yes"
 IPV6_PRIVACY="no"
 
-	```
+```
 
 3. 重启网络服务：
-	```
+```
 $ service network restart
-	```
+```
   
 4. 测试网络是否畅通
 	```
@@ -89,7 +89,7 @@ openssh-server.x86_64                7.4p1-11.el7                   @anaconda
 $ yum install openssh-server
 ```
 2. 编辑文件
-	```
+```
 # 把监听端口、监听地址前的#号去除
 $ vi /etc/ssh/sshd_config
 Port 22
@@ -107,13 +107,13 @@ PermitRootLogin yes
 PasswordAuthentication yes
 #PermitEmptyPasswords no
 PasswordAuthentication yes
-	```
+```
 6. 开启服务并检查
-	```
+```
 # 开启服务
 $ service sshd start
 # 检查是否启动
 $ ps -e | grep sshd 
 # 检查端口
 $ netstat -an | grep 22
-	```
+```
